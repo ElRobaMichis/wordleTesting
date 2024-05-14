@@ -82,7 +82,7 @@ function handleKeyPress(key) {
         if (currentGuess.length === 5) {
             if (validWords.includes(currentGuess)) {
                 checkGuess();
-                showMessage(''); // Limpiar el mensaje cuando la palabra es válida
+                return;
             } else {
                 showMessage('La palabra no es válida');
             }
@@ -160,15 +160,13 @@ function checkGuess() {
     if (guess === targetWord) {
         showMessage('¡Felicidades! Adivinaste la palabra.');
         gameEnded = true;
-        return;
-    }
-
-    currentRow++;
-    currentGuess = '';
-
-    if (currentRow === 6) {
-        gameEnded = true;
-        showMessage(`¡Juego terminado! La palabra era ${targetWord}`);
+    } else {
+        currentRow++;
+        currentGuess = '';
+        if (currentRow === 6) {
+            gameEnded = true;
+            showMessage(`¡Juego terminado! La palabra era ${targetWord}`);
+        }
     }
 }
 
