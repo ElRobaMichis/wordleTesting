@@ -15,9 +15,9 @@ async function loadWords() {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        validWords = data.words.map(word => word.toUpperCase()); // Guardar todas las palabras válidas
+        validWords = data.words.map(word => word.toUpperCase());
         targetWord = validWords[Math.floor(Math.random() * validWords.length)];
-        console.log(targetWord); // Para verificar la palabra seleccionada en la consola
+        console.log(targetWord);
     } catch (error) {
         console.error('Error al cargar las palabras:', error);
     }
@@ -76,7 +76,7 @@ function createKeyboard() {
 }
 
 function handleKeyPress(key) {
-    if (gameEnded) return; // Detener interacciones si el juego ha terminado
+    if (gameEnded) return;
 
     if (key === 'ENTER') {
         if (currentGuess.length === 5) {
