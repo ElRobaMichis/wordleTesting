@@ -167,8 +167,8 @@ function checkGuess() {
     currentGuess = '';
 
     if (currentRow === 6) {
-        showMessage(`¡Juego terminado! La palabra era ${targetWord}`);
         gameEnded = true;
+        showMessage(`¡Juego terminado! La palabra era ${targetWord}`);
     }
 }
 
