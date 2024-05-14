@@ -2,6 +2,7 @@ let targetWord = '';
 let currentGuess = '';
 let currentRow = 0;
 let gameEnded = false;
+let validWords = [];
 
 const board = document.getElementById('board');
 const keyboard = document.getElementById('keyboard');
@@ -14,8 +15,8 @@ async function loadWords() {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        const words = data.words;
-        targetWord = words[Math.floor(Math.random() * words.length)];
+        validWords = data.words.map(word => word.toUpperCase()); // Guardar todas las palabras válidas
+        targetWord = validWords[Math.floor(Math.random() * validWords.length)];
         console.log(targetWord); // Para verificar la palabra seleccionada en la consola
     } catch (error) {
         console.error('Error al cargar las palabras:', error);
@@ -79,9 +80,13 @@ function handleKeyPress(key) {
 
     if (key === 'ENTER') {
         if (currentGuess.length === 5) {
-            checkGuess();
+            if (validWords.includes(currentGuess)) {
+                checkGuess();
+            } else {
+                showMessage('La palabra no es válida');
+            }
         } else {
-            showMessage('Guess must be 5 letters');
+            showMessage('La palabra debe tener 5 letras');
         }
         return;
     }
@@ -152,7 +157,7 @@ function checkGuess() {
     }
 
     if (guess === targetWord) {
-        showMessage('Congratulations! You guessed the word!');
+        showMessage('¡Felicidades! Adivinaste la palabra.');
         gameEnded = true;
         return;
     }
@@ -161,7 +166,7 @@ function checkGuess() {
     currentGuess = '';
 
     if (currentRow === 6) {
-        showMessage(`Game over! The word was ${targetWord}`);
+        showMessage(`¡Juego terminado! La palabra era ${targetWord}`);
         gameEnded = true;
     }
 }
