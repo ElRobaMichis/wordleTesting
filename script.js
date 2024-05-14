@@ -82,6 +82,7 @@ function handleKeyPress(key) {
         if (currentGuess.length === 5) {
             if (validWords.includes(currentGuess)) {
                 checkGuess();
+                showMessage(''); // Limpiar el mensaje cuando la palabra es válida
             } else {
                 showMessage('La palabra no es válida');
             }
