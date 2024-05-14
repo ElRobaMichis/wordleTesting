@@ -158,12 +158,14 @@ function checkGuess() {
     }
 
     if (guess === targetWord) {
+        console.log('Se ha adivinado la palabra correctamente'); // Mensaje de depuración
         showMessage('¡Felicidades! Adivinaste la palabra.');
         gameEnded = true;
     } else {
         currentRow++;
         currentGuess = '';
         if (currentRow === 6) {
+            console.log('Se han agotado todos los intentos'); // Mensaje de depuración
             gameEnded = true;
             showMessage(`¡Juego terminado! La palabra era ${targetWord}`);
         }
@@ -183,6 +185,7 @@ function updateKeyboard(letter, status) {
 
 function showMessage(text) {
     message.textContent = text;
+    console.log('showMessage:', text); // Mensaje de depuración
 }
 
 createBoard();
