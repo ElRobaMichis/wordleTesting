@@ -17,9 +17,9 @@ async function loadWords() {
         const data = await response.json();
         validWords = data.words.map(word => word.toUpperCase());
         targetWord = validWords[Math.floor(Math.random() * validWords.length)];
-        console.log(targetWord);
+        console.log('Target word loaded:', targetWord);
     } catch (error) {
-        console.error('Error al cargar las palabras:', error);
+        console.error('Error loading words:', error);
     }
 }
 
@@ -76,7 +76,11 @@ function createKeyboard() {
 }
 
 function handleKeyPress(key) {
-    if (gameEnded) return;
+    console.log('Key pressed:', key);
+    if (gameEnded) {
+        console.log('Game has ended.');
+        return;
+    }
 
     if (key === 'ENTER') {
         if (currentGuess.length === 5) {
@@ -119,6 +123,7 @@ function updateBoard() {
 }
 
 function checkGuess() {
+    console.log('Checking guess:', currentGuess);
     const guess = currentGuess;
     const targetLetters = targetWord.split('');
     const guessLetters = guess.split('');
@@ -128,7 +133,6 @@ function checkGuess() {
         letterCount[targetLetters[i]] = (letterCount[targetLetters[i]] || 0) + 1;
     }
 
-    // First pass: mark correct letters
     for (let i = 0; i < 5; i++) {
         const letterBox = document.getElementById(`row-${currentRow}-col-${i}`);
         const letter = guess[i];
@@ -140,7 +144,6 @@ function checkGuess() {
         }
     }
 
-    // Second pass: mark present and absent letters
     for (let i = 0; i < 5; i++) {
         const letterBox = document.getElementById(`row-${currentRow}-col-${i}`);
         const letter = guess[i];
@@ -158,14 +161,14 @@ function checkGuess() {
     }
 
     if (guess === targetWord) {
-        console.log('Se ha adivinado la palabra correctamente'); // Mensaje de depuración
+        console.log('Word guessed correctly');
         showMessage('¡Felicidades! Adivinaste la palabra.');
         gameEnded = true;
     } else {
         currentRow++;
         currentGuess = '';
         if (currentRow === 6) {
-            console.log('Se han agotado todos los intentos'); // Mensaje de depuración
+            console.log('All attempts used');
             gameEnded = true;
             showMessage(`¡Juego terminado! La palabra era ${targetWord}`);
         }
@@ -185,7 +188,7 @@ function updateKeyboard(letter, status) {
 
 function showMessage(text) {
     message.textContent = text;
-    console.log('showMessage:', text); // Mensaje de depuración
+    console.log('showMessage:', text);
 }
 
 createBoard();
