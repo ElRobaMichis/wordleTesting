@@ -1,0 +1,107 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #121213; /* Fondo de la página */
+    color: #ffffff;
+}
+
+header {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid #3a3a3c; /* Borde inferior del header */
+    margin-bottom: 50px; /* Espaciado después del borde */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+    color: #ffffff;
+}
+
+#game {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.letter-box {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #3a3a3c; /* Color de los bordes del tablero */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.correct {
+    background-color: #538d4e; /* Verde */
+    color: white;
+}
+
+.present {
+    background-color: #b59f3b; /* Amarillo */
+    color: black;
+}
+
+.absent {
+    background-color: #3a3a3c; /* Gris oscuro */
+    color: white;
+}
+
+#keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.keyboard-row {
+    display: flex;
+    gap: 5px;
+}
+
+.key {
+    padding: 10px;
+    background-color: #818384; /* Color del teclado */
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    color: #f8f8f8; /* Color de las letras del teclado */
+}
+
+.key.correct {
+    background-color: #538d4e; /* Verde */
+    color: white;
+}
+
+.key.present {
+    background-color: #b59f3b; /* Amarillo */
+    color: black;
+}
+
+.key.absent {
+    background-color: #3a3a3c; /* Gris oscuro */
+    color: white;
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 18px;
+    color: red;
+}
