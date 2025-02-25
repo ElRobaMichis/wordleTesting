@@ -14,7 +14,12 @@ const commonWords = [
     'HIELO', 'JOVEN', 'LENTO', 'MANGO', 'NIEVE', 'PARED',
     'QUESO', 'RELOJ', 'SILLA', 'TARDE', 'VACIO', 'YERNO',
     'ZORRO', 'ARBOL', 'BESOS', 'COSER', 'DUCHA', 'FINCA',
-    'GATOS', 'HUEVO', 'JAULA', 'LUCHA', 'MENTA', 'NARIZ'
+    'GATOS', 'HUEVO', 'JAULA', 'LUCHA', 'MENTA', 'NARIZ',
+    // Added more words for local validation
+    'PIANO', 'FELIZ', 'LIBRO', 'COMER', 'BELLO', 'CAMPO',
+    'MUJER', 'HABER', 'JUGAR', 'NUEVO', 'MEJOR', 'HACER',
+    'MUNDO', 'CASA', 'VIVIR', 'TENER', 'AQUEL', 'PODER',
+    'VERDE', 'BEBER', 'CASAR', 'NUBES', 'CINCO', 'ANDAR'
 ];
 
 async function isValidWord(word) {
@@ -23,19 +28,48 @@ async function isValidWord(word) {
         document.getElementById('api-status').textContent = 'API Status: Checking...';
         document.getElementById('api-word-check').textContent = `Last word checked: ${word}`;
         
-        // Using a free Spanish dictionary API
-        const response = await fetch(`https://spanish-words-api.vercel.app/api/exists/${word.toLowerCase()}`);
+        // Using DictionaryAPI (diccionario abierto) with HTTPS
+        // This is a Spanish dictionary API that works with GitHub Pages
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/es/${word.toLowerCase()}`);
         
         if (response.ok) {
             const data = await response.json();
             document.getElementById('api-status').textContent = 'API Status: Response received';
-            document.getElementById('api-response').textContent = `API Response: ${JSON.stringify(data)}`;
-            return data.exists;
+            document.getElementById('api-response').textContent = `API Response: Word found in dictionary`;
+            
+            // If we got a response with meanings, the word exists
+            if (data && data.length > 0 && data[0].meanings && data[0].meanings.length > 0) {
+                return true;
+            }
+            
+            // If no match in API, check our local dictionary
+            const localMatch = commonWords.includes(word);
+            if (localMatch) {
+                document.getElementById('api-response').textContent += ' (Found in local dictionary)';
+                return true;
+            }
+            
+            return false;
+        } else if (response.status === 404) {
+            // 404 means word not found in dictionary
+            document.getElementById('api-status').textContent = 'API Status: Word not found';
+            document.getElementById('api-response').textContent = `API Response: Word not in dictionary`;
+            
+            // Check local dictionary as fallback
+            const localMatch = commonWords.includes(word);
+            if (localMatch) {
+                document.getElementById('api-response').textContent += ' (But found in local dictionary)';
+                return true;
+            }
+            
+            return false;
         }
         
         document.getElementById('api-status').textContent = 'API Status: Response error';
         document.getElementById('api-response').textContent = `API Response: HTTP ${response.status}`;
-        return false;
+        
+        // Fallback to local dictionary if API fails
+        return commonWords.includes(word);
     } catch (error) {
         console.error('Error checking word validity:', error);
         document.getElementById('api-status').textContent = 'API Status: Failed';
