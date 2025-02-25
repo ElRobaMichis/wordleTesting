@@ -28,8 +28,8 @@ async function isValidWord(word) {
         return false;
     } catch (error) {
         console.error('Error checking word validity:', error);
-        // Fallback - if API fails, consider all 5-letter words valid temporarily
-        return true;
+        // Fallback - if API fails, check if word is in our common words list
+        return commonWords.includes(word);
     }
 }
 
