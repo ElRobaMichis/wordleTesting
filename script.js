@@ -19,15 +19,28 @@ const commonWords = [
 
 async function isValidWord(word) {
     try {
+        // Update API status display
+        document.getElementById('api-status').textContent = 'API Status: Checking...';
+        document.getElementById('api-word-check').textContent = `Last word checked: ${word}`;
+        
         // Using a free Spanish dictionary API
         const response = await fetch(`https://spanish-words-api.vercel.app/api/exists/${word.toLowerCase()}`);
+        
         if (response.ok) {
             const data = await response.json();
+            document.getElementById('api-status').textContent = 'API Status: Response received';
+            document.getElementById('api-response').textContent = `API Response: ${JSON.stringify(data)}`;
             return data.exists;
         }
+        
+        document.getElementById('api-status').textContent = 'API Status: Response error';
+        document.getElementById('api-response').textContent = `API Response: HTTP ${response.status}`;
         return false;
     } catch (error) {
         console.error('Error checking word validity:', error);
+        document.getElementById('api-status').textContent = 'API Status: Failed';
+        document.getElementById('api-response').textContent = `API Response: ${error.message}`;
+        
         // Fallback - if API fails, check if word is in our common words list
         return commonWords.includes(word);
     }
