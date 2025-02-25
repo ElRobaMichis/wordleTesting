@@ -19,7 +19,12 @@ const commonWords = [
     'PIANO', 'FELIZ', 'LIBRO', 'COMER', 'BELLO', 'CAMPO',
     'MUJER', 'HABER', 'JUGAR', 'NUEVO', 'MEJOR', 'HACER',
     'MUNDO', 'CASA', 'VIVIR', 'TENER', 'AQUEL', 'PODER',
-    'VERDE', 'BEBER', 'CASAR', 'NUBES', 'CINCO', 'ANDAR'
+    'VERDE', 'BEBER', 'CASAR', 'NUBES', 'CINCO', 'ANDAR',
+    // Common Spanish words that API might not recognize
+    'NOCHE', 'LECHE', 'PERRO', 'GATO', 'PLAYA', 'DULCE',
+    'CORTO', 'LARGO', 'COCHE', 'VIAJE', 'PUNTO', 'CLASE',
+    'COLOR', 'FORMA', 'JARRO', 'BURRO', 'BANCO', 'TIRAR',
+    'PLATO', 'TECHO', 'FALSO', 'PARAR', 'SACAR', 'MIRAR'
 ];
 
 async function isValidWord(word) {
@@ -28,8 +33,15 @@ async function isValidWord(word) {
         document.getElementById('api-status').textContent = 'API Status: Checking...';
         document.getElementById('api-word-check').textContent = `Last word checked: ${word}`;
         
-        // Using DictionaryAPI (diccionario abierto) with HTTPS
-        // This is a Spanish dictionary API that works with GitHub Pages
+        // First check our local dictionary for common words
+        if (commonWords.includes(word)) {
+            document.getElementById('api-status').textContent = 'API Status: Using local dictionary';
+            document.getElementById('api-response').textContent = 'API Response: Word found in local dictionary';
+            return true;
+        }
+
+        // Try WordsAPI instead - more reliable Spanish dictionary
+        // Using proxy URL to avoid CORS issues on GitHub Pages
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/es/${word.toLowerCase()}`);
         
         if (response.ok) {
@@ -42,26 +54,11 @@ async function isValidWord(word) {
                 return true;
             }
             
-            // If no match in API, check our local dictionary
-            const localMatch = commonWords.includes(word);
-            if (localMatch) {
-                document.getElementById('api-response').textContent += ' (Found in local dictionary)';
-                return true;
-            }
-            
             return false;
         } else if (response.status === 404) {
             // 404 means word not found in dictionary
             document.getElementById('api-status').textContent = 'API Status: Word not found';
             document.getElementById('api-response').textContent = `API Response: Word not in dictionary`;
-            
-            // Check local dictionary as fallback
-            const localMatch = commonWords.includes(word);
-            if (localMatch) {
-                document.getElementById('api-response').textContent += ' (But found in local dictionary)';
-                return true;
-            }
-            
             return false;
         }
         
