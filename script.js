@@ -8,18 +8,42 @@ const board = document.getElementById('board');
 const keyboard = document.getElementById('keyboard');
 const message = document.getElementById('message');
 
+// List of common 5-letter Spanish words to pick a random target word
+const commonWords = [
+    'AMIGO', 'BARCO', 'CIELO', 'DAMAS', 'FUEGO', 'GRANO',
+    'HIELO', 'JOVEN', 'LENTO', 'MANGO', 'NIEVE', 'PARED',
+    'QUESO', 'RELOJ', 'SILLA', 'TARDE', 'VACIO', 'YERNO',
+    'ZORRO', 'ARBOL', 'BESOS', 'COSER', 'DUCHA', 'FINCA',
+    'GATOS', 'HUEVO', 'JAULA', 'LUCHA', 'MENTA', 'NARIZ'
+];
+
+async function isValidWord(word) {
+    try {
+        // Using a free Spanish dictionary API
+        const response = await fetch(`https://spanish-words-api.vercel.app/api/exists/${word.toLowerCase()}`);
+        if (response.ok) {
+            const data = await response.json();
+            return data.exists;
+        }
+        return false;
+    } catch (error) {
+        console.error('Error checking word validity:', error);
+        // Fallback - if API fails, consider all 5-letter words valid temporarily
+        return true;
+    }
+}
+
 async function loadWords() {
     try {
-        const response = await fetch('words.json');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        validWords = data.words.map(word => word.toUpperCase());
-        targetWord = validWords[Math.floor(Math.random() * validWords.length)];
+        // Set a random target word from our predefined list
+        targetWord = commonWords[Math.floor(Math.random() * commonWords.length)];
         console.log('Target word loaded:', targetWord);
+        
+        // We don't need to preload all valid words, as we'll check them dynamically
+        showMessage('¡Juego listo! Intenta adivinar la palabra de 5 letras.');
     } catch (error) {
-        console.error('Error loading words:', error);
+        console.error('Error setting up game:', error);
+        showMessage('Error al iniciar el juego. Por favor, recarga la página.');
     }
 }
 
@@ -75,12 +99,14 @@ function createKeyboard() {
     keyboard.appendChild(lastRow);
 }
 
-function handleKeyPress(key) {
+async function handleKeyPress(key) {
     if (gameEnded) return;
 
     if (key === 'ENTER') {
         if (currentGuess.length === 5) {
-            if (validWords.includes(currentGuess)) {
+            // Check if the word is valid using the dictionary API
+            const isValid = await isValidWord(currentGuess);
+            if (isValid) {
                 checkGuess();
                 return;
             } else {
